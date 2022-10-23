@@ -11,7 +11,12 @@ from threeD.threeD_module import CthreeD
 class CMainWindow(QMainWindow):
     def __init__(self):
         super(CMainWindow, self).__init__()
-        loadUi('mainwindow.ui', self)
+        try:
+            loadUi('mainwindow.ui', self)
+        except:
+            path = os.getcwd()
+            os.chdir(path + '/src')
+            loadUi('./mainwindow.ui', self)
         self.showMaximized()
         self.twoDaction.changed.connect(self.activate_2d)
         self.threeDaction.changed.connect(self.activate_3d)
@@ -43,7 +48,7 @@ class CMainWindow(QMainWindow):
     def paintEvent(self, event):
         super().paintEvent(event)
         painter = QPainter(self)
-        # 設定透明度
+        # Set transparency
         painter.setOpacity(0.5)
         w, h = self.width(), self.height()
         painter.drawPixmap(self.rect(), QPixmap(self.maindirectory+'/resources/background.png').scaled(w, h, Qt.KeepAspectRatio))
@@ -51,7 +56,7 @@ class CMainWindow(QMainWindow):
                            '<span style="background-color:	#7FFFD4; color:#8A2BE2">2D & 3D Processing Included</span>')
 
     def activate_2d(self):
-        # setChecked會被視為一種toggled, rejected也會被視為一種toggled
+        # setChecked is treated as a toggled, and rejected is treated as a toggled
         os.chdir(self.maindirectory)
         if self.refresh2D:
             if self.first2D:
